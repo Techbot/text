@@ -2,6 +2,20 @@ var lines, markov, data1, data2, x = 160, y = 240, img, iterator ;
 
 var myVoice = new p5.Speech(3); // new P5.Speech object
 
+p5.midi.onInput= function() {
+    console.log( this.event);
+
+
+
+    var note = p5.midi.event[1];
+    var velocity = p5.midi.event[2];
+
+
+ //   console.log(note);
+  //  console.log(velocity);
+}
+
+
 var listbutton; // button
 
 
@@ -10,7 +24,7 @@ function preload() {
     data1 = loadStrings('stocker.txt');
     //data2 = loadStrings('kafka.txt');
     data2 = loadStrings('stocker.txt');
-    img = loadImage("sito/000-f.jpg");
+  //  img = loadImage("sito/000-f.jpg");
 
 
 }
@@ -20,7 +34,7 @@ function setup() {
    // listbutton.position(180, 430);
  //   listbutton.mousePressed(doList);
     // say hello:
-    createCanvas(900, 500);
+    createCanvas(660, 400);
     textFont('times', 22);
     textAlign(LEFT);
 
@@ -31,7 +45,7 @@ function setup() {
 
     // create a markov model w' n=4
     markov = new RiMarkov(4);
-    image(img, 0, 0);
+   // image(img, 0, 0);
     // load text into the model
     markov.loadText(data1.join(' '));
     markov.loadText(data2.join(' '));
@@ -49,24 +63,31 @@ function setup() {
     sampler = Sampler().record( drums, 1 )
         .note.seq( [.25,.5,1,2].rnd(), [1/4,1/8,1/2].rnd() )
         .fx.add( Delay(1/64))
-        .pan.seq( Rndf(-1,1) )
+        .pan.seq( Rndf(-1,1) );
 
     bass = Mono('bass')
-        .note.seq( [0,7], 1/8 )
+        .note.seq( [0,7], 1/8 );
 
-    Gibber.scale.root.seq( ['c4','eb4'], 1 )
+    Gibber.scale.root.seq( ['c4','eb4'], 1 );
 
-    follow = Follow( Gibber.Master, 1024 )
+    follow = Follow( Gibber.Master, 1024 );
+;
+
+    //    p5.midi.init();
+
+
 
 }
 
+
+
 function drawText() {
-    img = loadImage("sito/001-f.jpg");
+  //  img = loadImage("sito/001-f.jpg");
 
     background(250);
-    lines = markov.generateSentences(2);
-    text(lines.join(' '), x, y, 800, 400);
-    image(img, 0, 0);
+   lines = markov.generateSentences(2);
+     text(lines.join(' '), x, y, 800, 400);
+   // image(img, 0, 0);
     myVoice.speak(lines.join(' '));
 
 }
@@ -102,18 +123,36 @@ function mouseClicked() {
 
 }
 
-function draw() {
-    background( follow.getValue() * 255 )
-   iterator++;
-   // console.log ('hi');
-    if (iterator==60){
 
-        iterator= 0;
-        image(img, 0, 0);
+function onInput(event){
+
+
+
+    console.log(event);
+
+}
+
+
+function draw() {
+    background(follow.getValue() * 255)
+    iterator++;
+    // console.log ('hi');
+
+
+
+
+
+
+
+
+    if (iterator == 60) {
+
+        iterator = 0;
+        //  image(img, 0, 0);
     }
     if (mouseIsPressed) {
-      //  image(img, 0, 0);
-     //   myVoice.speak( markov.generateSentences(10));
+        //  image(img, 0, 0);
+        //   myVoice.speak( markov.generateSentences(10));
 
     }
     var x = mouseX / windowWidth,
@@ -128,10 +167,14 @@ function draw() {
 
     sampler.fx[0].feedback = x < .99 ? x : .99
 
-    strokeWeight( value * 50 )
-    background( 64,64,64,10 )
-    ellipse( ww2, wh2, radius, radius )
+    strokeWeight(value * 50)
+    background(64, 64, 64, 10)
+    ellipse(ww2, wh2, radius, radius)
+
+
 }
+
+
 
 function doList()
 {
